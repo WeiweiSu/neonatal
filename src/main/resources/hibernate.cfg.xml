@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+		"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+		"http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+	<session-factory>
+		<property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+		<property name="hibernate.connection.password">123</property>
+		<property name="hibernate.connection.url">jdbc:mysql://localhost:3306/contacts</property>
+		<property name="hibernate.connection.username">suwei</property>
+		<property name="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</property>
+
+		<property name="show_sql">true</property>
+		<property name="hibernate.hbm2ddl.auto">update</property>
+		
+		<!-- Enable Hibernate Cache Provider -->
+		<property name="hibernate.cache.provider_class">
+     		 org.hibernate.cache.EhCacheProvider
+   		</property>
+   		<property name="hibernate.cache.use_query_cache">true</property>
+		<property name="hibernate.cache.use_second_level_cache">true</property>
+		
+		<property name="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.EhCacheRegionFactory</property>
+
+		<!-- Enable Hibernate's automatic session context management -->
+		<!-- <property name="current_session_context_class">thread</property> -->
+
+		<!-- Hibernate Search properties -->
+		<property name="hibernate.search.default.directory_provider">filesystem</property>
+
+		<property name="hibernate.search.default.indexBase">/Users/weiweisu/Documents/var/lucene/indexes</property>
+
+
+
+		<!-- mapping -->
+		<mapping class="org.wws.pojo.User" />
+		<mapping class="org.wws.pojo.Message" />
+		<mapping class="org.wws.pojo.Country" />
+		<mapping class="org.wws.pojo.Contact" />
+		<mapping class="org.wws.pojo.Post" />
+		<mapping class="org.wws.pojo.Comment" />
+		<mapping class="org.wws.pojo.Employee" />
+		<mapping class="org.wws.pojo.Role" />
+		<mapping class="org.wws.pojo.HealthQuestion" />
+
+
+	</session-factory>
+</hibernate-configuration>

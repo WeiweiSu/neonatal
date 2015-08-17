@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.2.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<beans:bean id="webexpressionHandler"
+		class="org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler" />
+
+	<beans:bean id="accessDeniedHandler"
+		class="org.wws.accessdeniedhandler.MyAccessDeniedHandler">
+		<beans:property name="accessDeniedUrl" value="403" />
+	</beans:bean>
+
+
+	<beans:bean id="encoder"
+		class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder">
+	</beans:bean>
+	
+	<!-- <beans:bean id="userDetailsServiceImpl" class="org.wws.springSecurity.UserDetailsServiceImpl"></beans:bean>
+	 -->
+
+	
+	<http use-expressions="true">
+		<intercept-url pattern="/logins" access="permitAll" />
+		<intercept-url pattern="/register" access="permitAll" />
+		<intercept-url pattern="/employees**" access="hasRole('ROLE_ADMIN')" />
+		<intercept-url pattern="/assignUserAccount**" access="hasRole('ROLE_ADMIN')" />
+		<intercept-url pattern="/moderators**" access="hasRole('ROLE_ADMIN')" />
+		<intercept-url pattern="/deletesuccess**" access="hasRole('ROLE_ADMIN')" />
+		<intercept-url pattern="/providerAccounts**" access="hasRole('ROLE_ADMIN')" />
+		<intercept-url pattern="/users**" access="hasRole('ROLE_ADMIN')" />
+		
+		<intercept-url pattern="/jsonanswer**" access="hasRole('ROLE_PROVIDER')" />
+		<intercept-url pattern="/provider" access="hasRole('ROLE_PROVIDER')" />
+		<intercept-url pattern="/unanswered*" access="hasRole('ROLE_PROVIDER')" />
+		
+		<intercept-url pattern="/moderator**" access="hasRole('ROLE_MODERATOR')" />
+		
+		<intercept-url pattern="/password*" access="hasAnyRole('ROLE_USER, ROLE_MODERATOR, ROLE_PROVIDER, ROLE_ADMIN')" />
+		<intercept-url pattern="/comments*" access="hasAnyRole('ROLE_USER, ROLE_MODERATOR, ROLE_PROVIDER, ROLE_ADMIN')" />
+		<intercept-url pattern="/community**" access="hasAnyRole('ROLE_USER, ROLE_MODERATOR, ROLE_PROVIDER, ROLE_ADMIN')" />
+		<intercept-url pattern="/contact**" access="hasAnyRole('ROLE_USER, ROLE_MODERATOR, ROLE_PROVIDER, ROLE_ADMIN')" />
+		<intercept-url pattern="/hsearch**" access="hasAnyRole('ROLE_USER, ROLE_MODERATOR, ROLE_PROVIDER, ROLE_ADMIN')" />
+		<intercept-url pattern="/homepage**" access="hasAnyRole('ROLE_USER, ROLE_MODERATOR, ROLE_PROVIDER, ROLE_ADMIN')" />
+		<intercept-url pattern="/logout*" access="hasAnyRole('ROLE_USER, ROLE_MODERATOR, ROLE_PROVIDER, ROLE_ADMIN')" />
+		<intercept-url pattern="/message**" access="hasAnyRole('ROLE_USER, ROLE_MODERATOR, ROLE_PROVIDER, ROLE_ADMIN')" />
+		<intercept-url pattern="/report.pdf*" access="hasAnyRole('ROLE_USER, ROLE_MODERATOR, ROLE_PROVIDER, ROLE_ADMIN')" />
+		<intercept-url pattern="/posts**" access="hasAnyRole('ROLE_USER, ROLE_MODERATOR, ROLE_PROVIDER, ROLE_ADMIN')" />
+		<intercept-url pattern="/profile**" access="hasAnyRole('ROLE_USER, ROLE_MODERATOR, ROLE_PROVIDER, ROLE_ADMIN')" />
+		<intercept-url pattern="/search**" access="hasAnyRole('ROLE_USER, ROLE_MODERATOR, ROLE_PROVIDER, ROLE_ADMIN')" />
+		<intercept-url pattern="/403" access="hasAnyRole('ROLE_USER, ROLE_MODERATOR, ROLE_PROVIDER, ROLE_ADMIN')" />
+		
+		
+		
+		<access-denied-handler ref="accessDeniedHandler" />
+		<form-login login-page='/logins' default-target-url='/homepage'
+			authentication-failure-url='/logins?error=true'
+			always-use-default-target='true' />
+		<logout logout-success-url='/logins' invalidate-session="true"
+			delete-cookies="SPRING_SECURITY_REMEMBER_ME_COOKIE" />
+		<anonymous username='guest' granted-authority='ROLE_GUEST' />
+		<remember-me />
+	</http>
+
+
+	<authentication-manager>
+		<authentication-provider>
+			<password-encoder ref="encoder" />
+			<jdbc-user-service data-source-ref="dataSource" users-by-username-query=" 
+				select username,password, enabled from user where username=?" authorities-by-username-query=" 
+				select u.username, ur.authority from user u, user_roles ur where u.userid 
+				= ur.user_id and u.username =? " />
+		</authentication-provider>
+	</authentication-manager>
+
+
+
+
+</beans:beans>
